@@ -67,7 +67,7 @@ work_flow.add_edge(WEB_SEARCH_NODE, GENERATE_NODE)
 work_flow.add_edge(GENERATE_NODE, END)
 
 graph = work_flow.compile()
-graph.get_graph().draw_mermaid_png(output_file_path="flow.png")
+graph.get_graph().draw_mermaid_png(output_file_path="rag_flow.png")
 
 
 if __name__ == "__main__":
