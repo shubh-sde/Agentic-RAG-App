@@ -1,7 +1,7 @@
-from graph.graph import graph
+from graph.graph_workflow import graph
 from dotenv import load_dotenv
-load_dotenv
+load_dotenv()
 
-if __name__ == "main": 
+if __name__ == "__main__": 
     print ("Hello advance RAG...")
-    print(graph.invoke(input= {"question": "What is agent memory"}))
+    print(graph.invoke(input= {"question": "What is agent"}))

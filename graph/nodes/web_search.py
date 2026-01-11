@@ -15,7 +15,7 @@ def web_search(state: GraphSate) -> Dict[str, Any]:
     question = state["question"]
     documents = state["documents"]
 
-    tavilySearch = web_search_tool.invoke({"query": question})
+    tavilySearch = web_search_tool.invoke({"query": question})['results']
 
     # As max result is 3, joining up the data of search result
     joined_search_result = "\n".join([tavily_result["content"] for tavily_result in tavilySearch])
