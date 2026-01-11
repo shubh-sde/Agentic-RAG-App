@@ -57,17 +57,17 @@ work_flow.add_conditional_edges(GRADE_DOC_NODE, decide_to_generate, {
     GENERATE_NODE: GENERATE_NODE
 }, )
 
-# work_flow.add_conditional_edges(GENERATE_NODE, grade_generation_grounded_in_documents_question, {
-#     "not supported":GENERATE_NODE,
-#     "not useful": WEB_SEARCH_NODE,
-#     "useful": END
-# })
+work_flow.add_conditional_edges(GENERATE_NODE, grade_generation_grounded_in_documents_question, {
+    "not supported":GENERATE_NODE,
+    "not useful": WEB_SEARCH_NODE,
+    "useful": END
+})
 work_flow.add_edge(WEB_SEARCH_NODE, GENERATE_NODE)
 
-work_flow.add_edge(GENERATE_NODE, END)
+# work_flow.add_edge(GENERATE_NODE, END)
 
 graph = work_flow.compile()
-graph.get_graph().draw_mermaid_png(output_file_path="rag_flow.png")
+graph.get_graph().draw_mermaid_png(output_file_path="self_rag_flow.png")
 
 
 if __name__ == "__main__":
