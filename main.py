@@ -5,4 +5,4 @@ load_dotenv()
 
 if __name__ == "__main__": 
     print ("Hello advance RAG...")
-    print(graph.invoke(input= {"question": "What is agent"}))
+    print(graph.invoke(input= {"question": "Perspective on Love and war concept"}))

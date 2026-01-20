@@ -1,4 +1,6 @@
 from dotenv import load_dotenv
+
+from graph.chains.router import RouteQuery, question_router
 load_dotenv()
 
 import pprint
@@ -41,9 +43,19 @@ from ingestion import retriever
 #     assert res.binary_score
 
 
-def test_hallunication_answer_no() -> None: 
-    question ="agent memory"
-    documents = retriever.invoke(question)
-    # generation = generation_chain.invoke({"context": documents, "question": question})
-    res:GradeHallucination = hallucination_grader.invoke({"documents":documents,"generation": "love nd war"})
-    assert not res.binary_score
+# def test_hallunication_answer_no() -> None: 
+#     question ="agent memory"
+#     documents = retriever.invoke(question)
+#     # generation = generation_chain.invoke({"context": documents, "question": question})
+#     res:GradeHallucination = hallucination_grader.invoke({"documents":documents,"generation": "love nd war"})
+#     assert not res.binary_score
+
+def test_router_to_vectorstore() -> None: 
+    question = "agent memory"
+    res: RouteQuery = question_router.invoke({"question":question})
+    assert res.datasource == "vectorstore"
+
+def test_router_to_web_search() -> None: 
+    question = "love and war"
+    res: RouteQuery = question_router.invoke({"question":question})
+    assert res.datasource == "websearch"

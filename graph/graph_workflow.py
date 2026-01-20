@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-
+from graph.chains.router import RouteQuery, question_router
 from .chains.answer_grader import answer_grader
 from .chains.hallunication_grader import hallucination_grader
 from .const import WEB_SEARCH_NODE, GRADE_DOC_NODE, GENERATE_NODE, RETRIEVE_NODE
@@ -8,6 +8,18 @@ from .state import GraphSate
 
 from langgraph.graph import StateGraph, END
 from .nodes import grade_documents, retrieve,generate, web_search
+
+def route_question(state: GraphSate) -> str:
+    print("---- Routing the user asked question ----")
+    question = state["question"]
+    source: RouteQuery = question_router.invoke({"question": question})
+    if source.datasource == "vectorstore": 
+        print("---- ROUTING TO DATABASE ----")
+        return RETRIEVE_NODE
+    elif source.datasource == "websearch":
+        print("---- ROUTING TO WEB SEARCH ----") 
+        return WEB_SEARCH_NODE
+    
 
 def grade_generation_grounded_in_documents_question(state: GraphSate) -> str: 
     print("---- Checking Hallucination ----")
@@ -50,7 +62,11 @@ work_flow.add_node(GRADE_DOC_NODE, grade_documents)
 work_flow.add_node(GENERATE_NODE, generate)
 work_flow.add_node(RETRIEVE_NODE, retrieve)
 
-work_flow.set_entry_point(RETRIEVE_NODE)
+work_flow.set_conditional_entry_point(route_question, {
+    WEB_SEARCH_NODE:WEB_SEARCH_NODE,
+    RETRIEVE_NODE:RETRIEVE_NODE,
+})
+
 work_flow.add_edge(RETRIEVE_NODE, GRADE_DOC_NODE)
 work_flow.add_conditional_edges(GRADE_DOC_NODE, decide_to_generate, {
     WEB_SEARCH_NODE: WEB_SEARCH_NODE,
@@ -64,10 +80,8 @@ work_flow.add_conditional_edges(GENERATE_NODE, grade_generation_grounded_in_docu
 })
 work_flow.add_edge(WEB_SEARCH_NODE, GENERATE_NODE)
 
-# work_flow.add_edge(GENERATE_NODE, END)
-
 graph = work_flow.compile()
-graph.get_graph().draw_mermaid_png(output_file_path="self_rag_flow.png")
+graph.get_graph().draw_mermaid_png(output_file_path="adaptive_rag_flow.png")
 
 
 if __name__ == "__main__":

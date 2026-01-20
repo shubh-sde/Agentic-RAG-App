@@ -13,7 +13,7 @@ web_search_tool = TavilySearch(max_results=3)
 def web_search(state: GraphSate) -> Dict[str, Any]:
     print("--- Web search started ---")
     question = state["question"]
-    documents = state["documents"]
+    documents = state.get("documents")
 
     tavilySearch = web_search_tool.invoke({"query": question})['results']
 
@@ -26,4 +26,4 @@ def web_search(state: GraphSate) -> Dict[str, Any]:
     else: 
         documents = [web_results]
 
-    return {"question": question, "documents": documents}
+    return {"documents": documents,"question": question}
